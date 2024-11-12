@@ -1,0 +1,4 @@
+.idea
+settings.local.yaml
+settings.*.yaml
+!settings.sample.yaml
