@@ -1,4 +1,4 @@
-package main
+package secret
 
 import (
 	"gopkg.in/yaml.v3"
@@ -13,7 +13,13 @@ func GetSecret() Secret {
 
 type Secret struct {
 	DiscordSecret `yaml:"discord"`
+	Firestore     `yaml:"firestore"`
 	JoinForm      `yaml:"join_form"`
+}
+
+type Firestore struct {
+	ProjectID      string  `yaml:"project_id"`
+	CredentialPath *string `yaml:"credential_path"`
 }
 
 type DiscordSecret struct {

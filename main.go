@@ -1,6 +1,7 @@
 package main
 
 import (
+	"discord-admin-bot/pkg/secret"
 	"fmt"
 	"github.com/gin-gonic/gin"
 )
@@ -10,7 +11,7 @@ type JoinFormSubmit struct {
 }
 
 func main() {
-	sec := GetSecret()
+	sec := secret.GetSecret()
 	e := gin.Default()
 	e.GET("/api/initial/form", func(c *gin.Context) {
 		redirectUrl := fmt.Sprintf(

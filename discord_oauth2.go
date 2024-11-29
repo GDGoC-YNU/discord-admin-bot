@@ -1,6 +1,7 @@
 package main
 
 import (
+	"discord-admin-bot/pkg/secret"
 	"encoding/json"
 	"fmt"
 	"io"
@@ -13,7 +14,7 @@ type DiscordOAuth2Resolver struct {
 }
 
 func NewDiscordOAuth2Resolver() *DiscordOAuth2Resolver {
-	sec := GetSecret()
+	sec := secret.GetSecret()
 	return &DiscordOAuth2Resolver{
 		callbackUrl:  sec.JoinForm.Callback,
 		clientID:     sec.DiscordSecret.ClientID,
@@ -58,7 +59,7 @@ func (r DiscordOAuth2Resolver) Resolve(code string) (authInfo *AuthInfo, err err
 		return nil, fmt.Errorf("failed to get me")
 	}
 	authInfo.UserInfo = &meResp.User
-	mem, err := r.GetGuildMemberStatus(tokens.AccessToken, GetSecret().DiscordSecret.GuildID, meResp.User.Id)
+	mem, err := r.GetGuildMemberStatus(tokens.AccessToken, secret.GetSecret().DiscordSecret.GuildID, meResp.User.Id)
 	if err != nil {
 		return nil, err
 	}

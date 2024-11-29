@@ -1,16 +1,17 @@
 package main
 
 import (
+	"discord-admin-bot/pkg/secret"
 	"fmt"
 	"github.com/bwmarrin/discordgo"
 )
 
 type DiscordServerlessClient struct {
-	secret DiscordSecret
+	secret secret.DiscordSecret
 }
 
 func NewDiscordServerlessClient() *DiscordServerlessClient {
-	sec := GetSecret()
+	sec := secret.GetSecret()
 	return &DiscordServerlessClient{
 		secret: sec.DiscordSecret,
 	}
