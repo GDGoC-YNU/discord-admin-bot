@@ -8,7 +8,7 @@ import (
 )
 
 type JoinFormSubmit struct {
-	Email string `json:"email"`
+	UserID string `json:"user_id"`
 }
 
 func main() {
@@ -51,6 +51,30 @@ func main() {
 		}
 		c.Redirect(302, fmt.Sprintf(sec.JoinForm.FormRedirectFormat, userID))
 	})
+
+	e.POST("/api/initial/form/submit", func(c *gin.Context) {
+		var form JoinFormSubmit
+		err := c.BindJSON(&form)
+		if err != nil {
+			c.JSON(400, gin.H{
+				"message": "failed to bind json",
+			})
+			return
+		}
+		d := NewDiscordServerlessClient()
+		err = d.GrantRole(form.UserID, sec.DiscordSecret.MemberRoleID)
+		if err != nil {
+			log.Printf("failed to grant role, err: %v", err)
+			c.JSON(500, gin.H{
+				"message": "failed to grant role",
+			})
+			return
+		}
+		c.JSON(200, gin.H{
+			"message": "ok",
+		})
+	})
+
 	e.GET("/health", func(c *gin.Context) {
 		c.JSON(200, gin.H{
 			"message": "ok",

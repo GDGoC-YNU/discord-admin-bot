@@ -27,7 +27,7 @@ func (d DiscordServerlessClient) GrantRole(userID, roleID string) error {
 		return err
 	}
 	defer c.Close()
-	if err := c.GuildMemberRoleAdd("guild_id", userID, roleID); err != nil {
+	if err := c.GuildMemberRoleAdd(d.secret.GuildID, userID, roleID); err != nil {
 		return fmt.Errorf("failed to grant role, err: %v", err)
 	}
 	return nil
