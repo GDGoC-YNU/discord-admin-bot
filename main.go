@@ -61,8 +61,17 @@ func main() {
 			})
 			return
 		}
+		// get user info from firestore
+		userInfo, err := fsUserInfo.GetUserInfo(c, form.UserID)
+		if err != nil {
+			log.Printf("failed to get user info, err: %v", err)
+			c.JSON(500, gin.H{
+				"message": "failed to get user info",
+			})
+			return
+		}
 		d := NewDiscordServerlessClient()
-		err = d.GrantRole(form.UserID, sec.DiscordSecret.MemberRoleID)
+		err = d.GrantRole(userInfo.Id, sec.DiscordSecret.MemberRoleID)
 		if err != nil {
 			log.Printf("failed to grant role, err: %v", err)
 			c.JSON(500, gin.H{
