@@ -1,4 +1,4 @@
-package main
+package discord
 
 import (
 	"discord-admin-bot/pkg/secret"
