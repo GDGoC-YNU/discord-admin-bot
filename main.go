@@ -42,8 +42,7 @@ func main() {
 			})
 			return
 		}
-		//TODO: store authenticated info
-		userID, err := fsUserInfo.SaveUserInfo(c, authInfo)
+		userID, err := fsUserInfo.SaveUserInfo(c, *authInfo)
 		if err != nil {
 			c.JSON(500, gin.H{
 				"message": "failed to save user info",

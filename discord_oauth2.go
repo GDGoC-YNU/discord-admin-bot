@@ -33,18 +33,28 @@ type MeResponse struct {
 }
 
 type GuildMemberStatusResponse struct {
-	ID            string `json:"id"`
-	Username      string `json:"username"`
-	Discriminator string `json:"discriminator"`
+	Nick     string   `json:"nick"`
+	UserInfo UserInfo `json:"user"`
 }
 
 type UserInfo struct {
-	Id            string `json:"id"`
-	Username      string `json:"username"`
-	Avatar        string `json:"avatar"`
-	Discriminator string `json:"discriminator"`
-	GlobalName    string `json:"global_name"`
-	PublicFlags   int    `json:"public_flags"`
+	Id                   string      `json:"id"`
+	Username             string      `json:"username"`
+	Avatar               string      `json:"avatar"`
+	Discriminator        string      `json:"discriminator"`
+	PublicFlags          int         `json:"public_flags"`
+	Flags                int         `json:"flags"`
+	Banner               string      `json:"banner"`
+	AccentColor          interface{} `json:"accent_color"`
+	GlobalName           string      `json:"global_name"`
+	AvatarDecorationData struct {
+		Asset     string      `json:"asset"`
+		SkuId     string      `json:"sku_id"`
+		ExpiresAt interface{} `json:"expires_at"`
+	} `json:"avatar_decoration_data"`
+	BannerColor  interface{} `json:"banner_color"`
+	Clan         interface{} `json:"clan"`
+	PrimaryGuild interface{} `json:"primary_guild"`
 }
 
 func (r DiscordOAuth2Resolver) Resolve(code string) (authInfo *AuthInfo, err error) {
@@ -92,9 +102,11 @@ func (r DiscordOAuth2Resolver) GetMe(accessToken string) (*MeResponse, error) {
 }
 
 func (r DiscordOAuth2Resolver) GetGuildMemberStatus(accessToken, guildID, userID string) (*GuildMemberStatusResponse, error) {
-	targetUrl := fmt.Sprintf("https://discord.com/api/guilds/%s/members/%s", guildID, userID)
+	targetUrl := fmt.Sprintf("https://discord.com/api/users/@me/guilds/%s/member", guildID)
 	rt := resty.New()
-	resp, err := rt.R().
+	resp, err := rt.
+		SetProxy("http://localhost:9000").
+		R().
 		SetAuthToken(accessToken).
 		Get(targetUrl)
 	if err != nil {
