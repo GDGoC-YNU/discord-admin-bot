@@ -26,11 +26,19 @@ func New() *firestore.Client {
 				log.Fatalf("os.ReadFile err: %v", err)
 			}
 			opt = option.WithCredentialsJSON(data)
+			client, err = firestore.NewClient(ctx, config.ProjectID, opt)
+			if err != nil {
+				log.Fatalf("firebase.NewClient err: %v", err)
+			}
+		} else {
+			client, err = firestore.NewClient(ctx, config.ProjectID)
+			if err != nil {
+				log.Fatalf("firebase.NewClient err: %v", err)
+			}
 		}
-		client, err = firestore.NewClient(ctx, config.ProjectID, opt)
-		if err != nil {
-			log.Fatalf("firebase.NewClient err: %v", err)
-		}
+	}
+	if client == nil {
+		log.Fatalf("failed to initialize firestore client")
 	}
 	return client
 }
