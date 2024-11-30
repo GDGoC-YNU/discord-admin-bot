@@ -19,9 +19,9 @@ func New() *firestore.Client {
 		ctx := context.Background()
 		config := secret.GetSecret().Firestore
 		var opt option.ClientOption
-		if config.CredentialPath != nil {
-			log.Printf("config.CredentialPath: %v", *config.CredentialPath)
-			data, err := os.ReadFile(*config.CredentialPath)
+		if config.CredentialPath != "" {
+			log.Printf("config.CredentialPath: %v", config.CredentialPath)
+			data, err := os.ReadFile(config.CredentialPath)
 			if err != nil {
 				log.Fatalf("os.ReadFile err: %v", err)
 			}
