@@ -18,6 +18,16 @@ func main() {
 	e.Static("/static", "./static")
 
 	fsUserInfo := NewFirestoreUserInfoRepo()
+	e.LoadHTMLGlob("templates/*")
+	e.GET("/api/initial/form/debug", func(c *gin.Context) {
+		c.HTML(200, "redirect.html.tmpl", gin.H{
+			"RedirectURL": fmt.Sprintf("%s%s/api/initial/form", sec.System.Protocol, sec.System.Host),
+			"OGPImageURL": fmt.Sprintf("%s%s/static/gdgoc-ynu-ogp-join.webp", sec.System.Protocol, sec.System.Host),
+			"LogoURL":     fmt.Sprintf("%s%s/static/gdgoc_ynu_logo.webp", sec.System.Protocol, sec.System.Host),
+			"Debug":       true,
+		})
+		return
+	})
 
 	e.GET("/api/initial/form", func(c *gin.Context) {
 		redirectUrl := fmt.Sprintf(
@@ -25,7 +35,13 @@ func main() {
 			sec.DiscordSecret.ClientID,
 			sec.JoinForm.Callback,
 		)
-		c.Redirect(302, redirectUrl)
+		c.HTML(200, "redirect.html.tmpl", gin.H{
+			"RedirectURL": redirectUrl,
+			"OGPImageURL": fmt.Sprintf("%s%s/static/gdgoc-ynu-ogp-join.webp", sec.System.Protocol, sec.System.Host),
+			"LogoURL":     fmt.Sprintf("%s%s/static/gdgoc_ynu_logo.webp", sec.System.Protocol, sec.System.Host),
+			"Debug":       false,
+		})
+		return
 	})
 
 	e.GET("/api/initial/form/callback", func(c *gin.Context) {
