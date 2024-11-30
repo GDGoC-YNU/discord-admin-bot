@@ -4,6 +4,7 @@ import (
 	"discord-admin-bot/pkg/secret"
 	"fmt"
 	"github.com/gin-gonic/gin"
+	"log"
 )
 
 type JoinFormSubmit struct {
@@ -33,15 +34,9 @@ func main() {
 			})
 		}
 		oauth2 := NewDiscordOAuth2Resolver()
-		tokens, err := oauth2.getTokens(code)
+		authInfo, err := oauth2.Resolve(code)
 		if err != nil {
-			c.JSON(500, gin.H{
-				"message": "failed to get tokens",
-			})
-			return
-		}
-		authInfo, err := oauth2.Resolve(tokens.AccessToken)
-		if err != nil {
+			log.Printf("failed to resolve, err: %v", err)
 			c.JSON(500, gin.H{
 				"message": "failed to resolve",
 			})
