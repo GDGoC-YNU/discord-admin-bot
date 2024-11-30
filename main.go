@@ -1,6 +1,7 @@
 package main
 
 import (
+	"discord-admin-bot/pkg/discord"
 	"discord-admin-bot/pkg/secret"
 	"fmt"
 	"github.com/gin-gonic/gin"
@@ -51,7 +52,7 @@ func main() {
 				"message": "code is required",
 			})
 		}
-		oauth2 := NewDiscordOAuth2Resolver()
+		oauth2 := discord.NewDiscordOAuth2Resolver()
 		authInfo, err := oauth2.Resolve(code)
 		if err != nil {
 			log.Printf("failed to resolve, err: %v", err)
@@ -88,7 +89,7 @@ func main() {
 			})
 			return
 		}
-		d := NewDiscordServerlessClient()
+		d := discord.NewDiscordServerlessClient()
 		err = d.GrantRole(userInfo.Id, sec.DiscordSecret.MemberRoleID)
 		if err != nil {
 			log.Printf("failed to grant role, err: %v", err)

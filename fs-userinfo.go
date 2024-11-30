@@ -3,6 +3,7 @@ package main
 import (
 	"cloud.google.com/go/firestore"
 	"context"
+	"discord-admin-bot/pkg/discord"
 	"discord-admin-bot/pkg/firebase"
 	"log"
 )
@@ -26,7 +27,7 @@ func NewFirestoreUserInfoRepo() *FirestoreUserInfoRepo {
 	}
 }
 
-func (r FirestoreUserInfoRepo) SaveUserInfo(ctx context.Context, d AuthInfo) (string, error) {
+func (r FirestoreUserInfoRepo) SaveUserInfo(ctx context.Context, d discord.AuthInfo) (string, error) {
 	u := FSUserInfo{
 		Id:            d.UserInfo.Id,
 		Username:      d.UserInfo.Username,
