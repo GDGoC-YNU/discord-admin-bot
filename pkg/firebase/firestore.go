@@ -1,4 +1,4 @@
-package firestore
+package firebase
 
 import (
 	"cloud.google.com/go/firestore"
@@ -20,6 +20,7 @@ func New() *firestore.Client {
 		config := secret.GetSecret().Firestore
 		var opt option.ClientOption
 		if config.CredentialPath != nil {
+			log.Printf("config.CredentialPath: %v", *config.CredentialPath)
 			data, err := os.ReadFile(*config.CredentialPath)
 			if err != nil {
 				log.Fatalf("os.ReadFile err: %v", err)
