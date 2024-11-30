@@ -1,4 +1,14 @@
+system:
+  protocol: "https://"
+  host: "xxx.pro"
 discord:
   client_id: "DISCORD_CLIENT_ID"
   client_secret: "DISCORD_CLIENT_SECRET"
-  channel: "DISCORD_CHANNEL"
+  token: "DISCORD_TOKEN"
+  guild_id: "123456789012345678"
+  member_role_id: "123456789012345678"
+join_form:
+  callback_url: "https://xxx.pro/api/initial/form/callback"
+  form_redirect_format: "https://docs.google.com/forms/d/e/xxxxxxxx/viewform?usp=pp_url&entry.12345667890=%s"
+firestore:
+  project_id: "gdgoc-ynu-discord-bot"
