@@ -105,7 +105,6 @@ func (r DiscordOAuth2Resolver) GetGuildMemberStatus(accessToken, guildID, userID
 	targetUrl := fmt.Sprintf("https://discord.com/api/users/@me/guilds/%s/member", guildID)
 	rt := resty.New()
 	resp, err := rt.
-		SetProxy("http://localhost:9000").
 		R().
 		SetAuthToken(accessToken).
 		Get(targetUrl)
