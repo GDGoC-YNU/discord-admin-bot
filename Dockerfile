@@ -4,3 +4,4 @@ COPY . .
 RUN go build -o /app/main .
 ENV SECRET_LOCATION=/secrets/settings.yaml
 CMD [ "/app/main" ]
+EXPOSE 8080
