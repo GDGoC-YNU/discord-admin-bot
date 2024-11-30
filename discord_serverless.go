@@ -1,16 +1,17 @@
 package main
 
 import (
+	"discord-admin-bot/pkg/secret"
 	"fmt"
 	"github.com/bwmarrin/discordgo"
 )
 
 type DiscordServerlessClient struct {
-	secret DiscordSecret
+	secret secret.DiscordSecret
 }
 
 func NewDiscordServerlessClient() *DiscordServerlessClient {
-	sec := GetSecret()
+	sec := secret.GetSecret()
 	return &DiscordServerlessClient{
 		secret: sec.DiscordSecret,
 	}
@@ -26,7 +27,7 @@ func (d DiscordServerlessClient) GrantRole(userID, roleID string) error {
 		return err
 	}
 	defer c.Close()
-	if err := c.GuildMemberRoleAdd("guild_id", userID, roleID); err != nil {
+	if err := c.GuildMemberRoleAdd(d.secret.GuildID, userID, roleID); err != nil {
 		return fmt.Errorf("failed to grant role, err: %v", err)
 	}
 	return nil

@@ -1,17 +1,22 @@
 package main
 
 import (
+	"discord-admin-bot/pkg/secret"
 	"fmt"
 	"github.com/gin-gonic/gin"
+	"log"
 )
 
 type JoinFormSubmit struct {
-	Email string `json:"email"`
+	UserID string `json:"user_id"`
 }
 
 func main() {
-	sec := GetSecret()
+	sec := secret.GetSecret()
 	e := gin.Default()
+
+	fsUserInfo := NewFirestoreUserInfoRepo()
+
 	e.GET("/api/initial/form", func(c *gin.Context) {
 		redirectUrl := fmt.Sprintf(
 			"https://discord.com/oauth2/authorize?client_id=%s&redirect_uri=%s&response_type=code&scope=identify%%20guilds.members.read",
@@ -29,21 +34,51 @@ func main() {
 			})
 		}
 		oauth2 := NewDiscordOAuth2Resolver()
-		tokens, err := oauth2.getTokens(code)
+		authInfo, err := oauth2.Resolve(code)
 		if err != nil {
-			c.JSON(500, gin.H{
-				"message": "failed to get tokens",
-			})
-			return
-		}
-		authInfo, err := oauth2.Resolve(tokens.AccessToken)
-		if err != nil {
+			log.Printf("failed to resolve, err: %v", err)
 			c.JSON(500, gin.H{
 				"message": "failed to resolve",
 			})
 			return
 		}
-		//TODO: store authenticated info
-		c.JSON(200, authInfo)
+		userID, err := fsUserInfo.SaveUserInfo(c, *authInfo)
+		if err != nil {
+			c.JSON(500, gin.H{
+				"message": "failed to save user info",
+			})
+			return
+		}
+		c.Redirect(302, fmt.Sprintf(sec.JoinForm.FormRedirectFormat, userID))
 	})
+
+	e.POST("/api/initial/form/submit", func(c *gin.Context) {
+		var form JoinFormSubmit
+		err := c.BindJSON(&form)
+		if err != nil {
+			c.JSON(400, gin.H{
+				"message": "failed to bind json",
+			})
+			return
+		}
+		d := NewDiscordServerlessClient()
+		err = d.GrantRole(form.UserID, sec.DiscordSecret.MemberRoleID)
+		if err != nil {
+			log.Printf("failed to grant role, err: %v", err)
+			c.JSON(500, gin.H{
+				"message": "failed to grant role",
+			})
+			return
+		}
+		c.JSON(200, gin.H{
+			"message": "ok",
+		})
+	})
+
+	e.GET("/health", func(c *gin.Context) {
+		c.JSON(200, gin.H{
+			"message": "ok",
+		})
+	})
+	e.Run(":8080")
 }
