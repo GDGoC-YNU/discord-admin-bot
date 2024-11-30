@@ -15,6 +15,8 @@ func main() {
 	sec := secret.GetSecret()
 	e := gin.Default()
 
+	e.Static("/static", "./static")
+
 	fsUserInfo := NewFirestoreUserInfoRepo()
 
 	e.GET("/api/initial/form", func(c *gin.Context) {
