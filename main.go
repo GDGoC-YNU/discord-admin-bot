@@ -3,6 +3,7 @@ package main
 import (
 	"discord-admin-bot/pkg/discord"
 	"discord-admin-bot/pkg/secret"
+	"discord-admin-bot/repo"
 	"fmt"
 	"github.com/gin-gonic/gin"
 	"log"
@@ -18,7 +19,7 @@ func main() {
 
 	e.Static("/static", "./static")
 
-	fsUserInfo := NewFirestoreUserInfoRepo()
+	fsUserInfo := repo.NewFirestoreUserInfoRepo()
 	e.LoadHTMLGlob("templates/*")
 	e.GET("/api/initial/form/debug", func(c *gin.Context) {
 		c.HTML(200, "redirect.html.tmpl", gin.H{
