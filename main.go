@@ -13,6 +13,9 @@ type JoinFormSubmit struct {
 func main() {
 	sec := secret.GetSecret()
 	e := gin.Default()
+
+	fsUserInfo := NewFirestoreUserInfoRepo()
+
 	e.GET("/api/initial/form", func(c *gin.Context) {
 		redirectUrl := fmt.Sprintf(
 			"https://discord.com/oauth2/authorize?client_id=%s&redirect_uri=%s&response_type=code&scope=identify%%20guilds.members.read",
@@ -45,6 +48,19 @@ func main() {
 			return
 		}
 		//TODO: store authenticated info
-		c.JSON(200, authInfo)
+		userID, err := fsUserInfo.SaveUserInfo(c, authInfo)
+		if err != nil {
+			c.JSON(500, gin.H{
+				"message": "failed to save user info",
+			})
+			return
+		}
+		c.Redirect(302, fmt.Sprintf(sec.JoinForm.FormRedirectFormat, userID))
 	})
+	e.GET("/health", func(c *gin.Context) {
+		c.JSON(200, gin.H{
+			"message": "ok",
+		})
+	})
+	e.Run(":8080")
 }
