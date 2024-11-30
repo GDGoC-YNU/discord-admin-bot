@@ -58,6 +58,7 @@ func (r DiscordOAuth2Resolver) Resolve(code string) (authInfo *AuthInfo, err err
 	if meResp == nil {
 		return nil, fmt.Errorf("failed to get me")
 	}
+	authInfo = new(AuthInfo)
 	authInfo.UserInfo = &meResp.User
 	mem, err := r.GetGuildMemberStatus(tokens.AccessToken, secret.GetSecret().DiscordSecret.GuildID, meResp.User.Id)
 	if err != nil {
