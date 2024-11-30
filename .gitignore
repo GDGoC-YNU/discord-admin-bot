@@ -2,3 +2,4 @@
 settings.local.yaml
 settings.*.yaml
 !settings.sample.yaml
+svc-account.json
