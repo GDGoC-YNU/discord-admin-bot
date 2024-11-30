@@ -18,8 +18,8 @@ type Secret struct {
 }
 
 type Firestore struct {
-	ProjectID      string  `yaml:"project_id"`
-	CredentialPath *string `yaml:"credential_path"`
+	ProjectID      string `yaml:"project_id"`
+	CredentialPath string `yaml:"credential_path"`
 }
 
 type DiscordSecret struct {

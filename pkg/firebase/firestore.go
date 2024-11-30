@@ -19,18 +19,26 @@ func New() *firestore.Client {
 		ctx := context.Background()
 		config := secret.GetSecret().Firestore
 		var opt option.ClientOption
-		if config.CredentialPath != nil {
-			log.Printf("config.CredentialPath: %v", *config.CredentialPath)
-			data, err := os.ReadFile(*config.CredentialPath)
+		if config.CredentialPath != "" {
+			log.Printf("config.CredentialPath: %v", config.CredentialPath)
+			data, err := os.ReadFile(config.CredentialPath)
 			if err != nil {
 				log.Fatalf("os.ReadFile err: %v", err)
 			}
 			opt = option.WithCredentialsJSON(data)
+			client, err = firestore.NewClient(ctx, config.ProjectID, opt)
+			if err != nil {
+				log.Fatalf("firebase.NewClient err: %v", err)
+			}
+		} else {
+			client, err = firestore.NewClient(ctx, config.ProjectID)
+			if err != nil {
+				log.Fatalf("firebase.NewClient err: %v", err)
+			}
 		}
-		client, err = firestore.NewClient(ctx, config.ProjectID, opt)
-		if err != nil {
-			log.Fatalf("firebase.NewClient err: %v", err)
-		}
+	}
+	if client == nil {
+		log.Fatalf("failed to initialize firestore client")
 	}
 	return client
 }
