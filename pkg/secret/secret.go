@@ -12,9 +12,15 @@ func GetSecret() Secret {
 }
 
 type Secret struct {
+	System        `yaml:"system"`
 	DiscordSecret `yaml:"discord"`
 	Firestore     `yaml:"firestore"`
 	JoinForm      `yaml:"join_form"`
+}
+
+type System struct {
+	Protocol string `yaml:"protocol"`
+	Host     string `yaml:"host"`
 }
 
 type Firestore struct {
