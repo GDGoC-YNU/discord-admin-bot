@@ -44,3 +44,17 @@ func (r FirestoreUserInfoRepo) SaveUserInfo(ctx context.Context, d AuthInfo) (st
 	log.Printf("saved user info, doc: %v", newDoc.ID)
 	return newDoc.ID, nil
 }
+
+func (r FirestoreUserInfoRepo) GetUserInfo(ctx context.Context, userID string) (*FSUserInfo, error) {
+	doc, err := r.fs.Collection("users").Doc(userID).Get(ctx)
+	if err != nil {
+		log.Printf("failed to get user info, err: %v", err)
+		return nil, err
+	}
+	var u FSUserInfo
+	if err := doc.DataTo(&u); err != nil {
+		log.Printf("failed to convert data, err: %v", err)
+		return nil, err
+	}
+	return &u, nil
+}
